@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.mapper.StudentMapper">
+
+
+    <select id="findStu" resultType="student" parameterType="student">
+        select * from t_student
+        <where>
+            <choose>
+                <when test="name!=null and name !=''">
+                    name =#{name}
+                </when>
+                <when test="major!=null and major !=''">
+                    major =#{major}
+                </when>
+                <otherwise>
+                    and stuId is not null
+                </otherwise>
+            </choose>
+        </where>
+    </select>
+
+    <select id="findStuLeId" resultType="student">
+             select * from t_student where id &lt; #{id}
+    </select>
+</mapper>
+

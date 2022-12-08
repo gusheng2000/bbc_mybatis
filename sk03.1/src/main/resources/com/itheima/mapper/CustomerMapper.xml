@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.mapper.CustomerMapper">
+
+    <!--	3.2.1  if标签 where-->
+    <select id="findByNameAndJobs" resultType="Customer" parameterType="Customer">
+        select * from t_customer
+        <where>
+            <if test="userName!=null and userName !='' ">
+                and username like concat("%",#{userName},"%")
+            </if>
+            <if test="jobs!=null and jobs !='' ">
+                and jobs = #{jobs}
+            </if>
+        </where>
+    </select>
+
+    <!--	3.2.2  choose when   otherwise 使用-->
+    <select id="findByNameOrJobs" parameterType="Customer" resultType="Customer">
+        select * from t_customer where 1=1
+        <!--     <where>-->
+        <choose>
+            <when test="userName!=null and userName !=''">
+                and username like concat("%",#{userName},"%")
+            </when>
+            <when test="jobs!=null and jobs !=''">
+                and jobs = #{jobs}
+            </when>
+            <otherwise>
+                and phone is not null
+            </otherwise>
+        </choose>
+        --       <!--     </where>-->
+    </select>
+
+    <!--3.2.3  trim -->
+    <select id="findByNameAndJobsWithTrim" resultType="Customer" parameterType="Customer">
+        select * from t_customer
+        <trim prefix="where" prefixOverrides="and">
+            <if test="userName!=null and userName !='' ">
+                and username like concat("%",#{userName},"%")
+            </if>
+            <if test="jobs!=null and jobs !='' ">
+                and jobs = #{jobs}
+            </if>
+        </trim>
+    </select>
+
+
+    <!--	3.3 更新  使用set  或者trim-->
+    <update id="updateBySet" parameterType="Customer">
+        update t_customer
+        <!--  <trim prefix="set" suffixOverrides=",">	  -->
+        <set>
+            <if test="userName!=null and userName !='' ">
+                username =#{userName},
+            </if>
+            <if test="jobs!=null and jobs !='' ">
+                jobs = #{jobs},
+            </if>
+            <if test="phone!=null and phone !='' ">
+                phone = #{phone},
+            </if>
+        </set>
+        <!-- </trim>-->
+        where id =#{id}
+    </update>
+
+
+    <!--	3.4 .2复杂查询操作  arrays   list  map -->
+    <select id="findByArray" parameterType="java.util.Arrays" resultType="Customer">
+        select * from t_customer where id in
+        <foreach collection="array" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+    <!--      3.4.3 list  -->
+    <select id="findByList" parameterType="java.util.Arrays" resultType="Customer">
+        select * from t_customer where id in
+        <foreach collection="list" index="index" item="id" open="(" separator="," close=")">
+            #{id}
+        </foreach>
+    </select>
+
+
+<!--    如果value是字符串可以再SQL语句中直接引用map的key值-->
+    <!--      3.4.4 Map  -->
+    <select id="findByMap" parameterType="java.util.Map" resultType="Customer">
+        select * from t_customer where jobs like concat ('%',#{job},'%')
+        and
+        id in
+        <foreach collection="ikkd" index="index" item="idMap" open="(" separator="," close=")">
+            #{idMap}
+        </foreach>
+
+    </select>
+
+
+</mapper>
+

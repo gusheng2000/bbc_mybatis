@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.itheima.dao.PersonDao">
+
+<!--  一对一   嵌套查询 在association 标签中执行一条SQL语句来返回语气的负载类型-->
+    <select id="findPersonById" parameterType="integer"
+            resultMap="IdCardWithPersonResult">
+            
+            select * from tb_person where id =#{id}
+        </select>
+    <resultMap id="IdCardWithPersonResult" type="person">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="age" column="age"/>
+        <association property="card" column="card_id" javaType="idCard"
+                     select="com.itheima.dao.IdCardDao.findCodeById"/>
+    </resultMap>
+
+
+
+    <!--  一对一嵌套结果查询-->
+    <select id="findPersonById2" parameterType="integer" resultMap="IdCardWithPersonResult2">
+            select p.* ,idcard.code
+                from tb_person p ,tb_idcard idcard
+                where p.id =#{id}
+        </select>
+    <resultMap id="IdCardWithPersonResult2" type="person">
+        <id property="id" column="id"/>
+        <result property="name" column="name"/>
+        <result property="sex" column="sex"/>
+        <result property="age" column="age"/>
+        <association property="card" column="card_id" javaType="idCard">
+            <id property="id" column="card_id"/>
+            <result property="CODE" column="code"/>
+        </association>
+    </resultMap>
+
+
+
+
+</mapper>
+

@@ -1,0 +1,5 @@
+com\itheima\pojo\Student.class
+com\itheima\mapper\StudentMapper.class
+com\itheima\pojo\User.class
+com\itheima\mapper\UserMapper.class
+com\itheima\utils\MyBatisUtils.class
